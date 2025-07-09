@@ -1,68 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
 
-#include<stdio.h>
-#include<string.h>
-#include<math.h>
-#include<stdlib.h>
-#include<stdbool.h>
-typedef struct Node
-{
+typedef struct Node {
     int data;
-    struct Node* next;
-}Node;
-typedef struct Stack
-{
-    Node* top;
-}Stack;
-Stack* createStack()
-{
-    Stack* stack=(Stack*)malloc(sizeof(Stack));
-    stack->top=NULL;
-    return stack;
+    struct Node *next;
+} Node;
+
+// Hàm khởi tạo Stack
+Node *initialStack() {
+    return NULL;
 }
-Node* createNode(int value)
-{
-    Node* newNode=(Node*)malloc(sizeof(Node));
-    newNode->data=value;
-    newNode->next=NULL;
+
+// Thêm phần tử vào đầu Stack
+Node *push(int value, Node *top) {
+    // Cấp phát bộ nhớ
+    Node *newNode = (Node *) malloc(sizeof(Node));
+
+    // Kiểm tra bộ nhớ đủ để cấp phát ko
+    if (newNode == NULL) {
+        printf("Khong du bo nho de cap phat\n");
+        exit(1);
+    }
+
+    newNode->data = value;
+    newNode->next = top;
+
+    // newNode thành top mới
     return newNode;
 }
-void push(Stack* stack,int value)
-{
-    Node* newNode=createNode(value);
-    newNode->next=stack->top;
-    stack->top=newNode;
-}
-int pop(Stack* stack)
-{
-    Node* temp=stack->top;
-    int value=temp->data;
-    stack->top=temp->next;
-    free(temp);
-    return value;
+
+int isEmpty(Node *top) {
+    return top == NULL;
 }
 
-void printStack(Stack* stack) {
-    int check=0;
-    Node* current = stack->top;
-    while (current != NULL) {
-        printf("%d\n", current->data);
-        current = current->next;
-        check=1;
+// In ra Stack theo thứ tự LIFO
+void printStack(Node* top) {
+    if (top == NULL) {
+        printf("Ngan xep bi rong!\n");
+        return;
     }
-    if (!check)
-    {
-        printf("Ngan xep trong");
+
+    printf("Cac phan tu co trong ngan xep:\n");
+    Node* temp = top;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+void freeStack(Node *top) {
+    Node *temp;
+    while (top != NULL) {
+        temp = top;
+        top = top->next;
+        free(temp);
     }
 }
-int main(){
-    Stack* myStack=createStack();
-    push(myStack,5);
-    push(myStack,4);
-    push(myStack,3);
-    push(myStack,2);
-    push(myStack,1);
 
-    printStack(myStack);
+int main() {
+    Node *stack = initialStack();
+
+    stack = push(1, stack);
+    stack = push(2, stack);
+    stack = push(3, stack);
+    stack = push(4, stack);
+    stack = push(5, stack);
+
+    printStack(stack);
+
+    freeStack(stack);
 
     return 0;
 }

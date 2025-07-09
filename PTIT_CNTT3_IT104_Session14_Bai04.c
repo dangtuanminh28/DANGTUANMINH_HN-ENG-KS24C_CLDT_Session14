@@ -1,66 +1,97 @@
-#include<stdlib.h>
-#include<stdbool.h>
-typedef struct Node
-{
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
     int data;
-    struct Node* next;
-}Node;
-typedef struct Stack
-{
-    Node* top;
-}Stack;
-Stack* createStack()
-{
-    Stack* stack=(Stack*)malloc(sizeof(Stack));
-    stack->top=NULL;
-    return stack;
+    struct Node *next;
+} Node;
+
+// Hàm khởi tạo Stack
+Node* initialStack() {
+
+    return NULL;
 }
-Node* createNode(int value)
-{
-    Node* newNode=(Node*)malloc(sizeof(Node));
-    newNode->data=value;
-    newNode->next=NULL;
+
+// Thêm phần tử vào đầu Stack
+Node* push (int value, Node* top) {
+    // Cấp phát bộ nhớ
+    Node* newNode = (Node*)malloc(sizeof(Node));
+
+    // Kiểm tra bộ nhớ đủ để cấp phát ko
+    if (newNode == NULL) {
+        printf("Khong du bo nho de cap phat\n");
+        exit(1);
+    }
+
+    newNode->data = value;
+    newNode->next = top;
+
+    // newNode thành top mới
     return newNode;
 }
-void push(Stack* stack,int value)
-{
-    Node* newNode=createNode(value);
-    newNode->next=stack->top;
-    stack->top=newNode;
+
+int isEmpty(Node* top) {
+    return top == NULL;
 }
-int pop(Stack* stack)
-{
-    if (stack->top==NULL)
-    {
-        printf("Ngan xep trong\n");
-        return -1;
+// In ra Stack
+void printStack(Node* top) {
+    printf("Cac phan tu co trong Stack la: \n");
+
+    if (isEmpty(top)) {
+        printf("Ngan sep bi rong!");
+        return;
     }
-    Node* temp=stack->top;
-    int value=temp->data;
-    stack->top=temp->next;
+
+    // Duyệt danh sách
+    Node* temp = top;
+
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("NULL");
+}
+
+// Hàm kiểm tra
+void pop(Node** top) {
+    if (*top == NULL) {
+        printf("Ngan xep rong!\n");
+        return;
+    }
+
+    printf("Phan tu pop: %d\n", (*top)->data);
+    Node* temp = *top;
+    *top = (*top)->next;
+
     free(temp);
-    return value;
 }
-void printStack(Stack* stack) {
-    Node* current = stack->top;
-    while (current != NULL) {
-        printf("%d", current->data);
-        if (current->next != NULL) printf("->");
-        current = current->next;
+
+// Hàm xử lý phần tử ra khỏi ngăn xếp
+void freeStack(Node* top) {
+    Node* temp;
+    while (top != NULL) {
+        temp = top;
+        top = top->next;
+        free(temp);
     }
-    printf("->NULL \n");
 }
-int main(){
-    Stack* myStack=createStack();
-    push(myStack,5);
-    push(myStack,4);
-    push(myStack,3);
-    push(myStack,2);
-    push(myStack,1);
+int main() {
+    Node* stack = initialStack();
 
-    pop(myStack);
+    stack = push(5, stack);
+    stack = push(4, stack);
+    stack = push(3, stack);
+    stack = push(2, stack);
+    stack = push(1, stack);
 
-    printStack(myStack);
+    printStack(stack);
+    printf("\n");
+
+    pop(&stack);
+    printStack(stack);
+
+    freeStack(stack);
 
     return 0;
 }
